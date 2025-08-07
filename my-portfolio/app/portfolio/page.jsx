@@ -2,43 +2,56 @@
 "use client"
 
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import ProjectCard from "../../components/ProjectCard";
 
 export default function PortfolioPage() {
-    const projects = [
-        {
-            title: "E-commerce Platform",
-            description: "A full-featured online store with payments, inventory management and analytics.",
-            technologies: ["React", "Node.js", "MongoDB", "Stripe"]
-        },
-        {
-            title: "Healthcare Dashboard",
-            description: "Interactive analytics dashboard for healthcare providers.",
-            technologies: ["Next.js", "TypeScript", "D3.js", "Firebase"]
-        },
-        {
-            title: "Educational App",
-            description: "Mobile application for interactive learning.",
-            technologies: ["React Native", "Redux", "Express", "PostgreSQL"]
-        },
-        {
-            title: "Content Management System",
-            description: "Custom CMS for digital content creators.",
-            technologies: ["Vue.js", "Node.js", "GraphQL", "MongoDB"]
-        },
-        {
-            title: "Social Media Platform",
-            description: "Niche social network with real-time features.",
-            technologies: ["React", "Socket.io", "Express", "Redis"]
-        },
-        {
-            title: "Fitness Tracker",
-            description: "Web and mobile app for tracking workouts and nutrition.",
-            technologies: ["React", "React Native", "Node.js", "MongoDB"]
+    const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        async function fetchProjects() {
+            try {
+                const response = await fetch('/api/projects');
+                
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                setProjects(data);
+                setLoading(false);
+            } catch (err) {
+                console.error("Failed to fetch projects:", err);
+                setError("Failed to load projects. Please try again later.");
+                setLoading(false);
+                
+                // Fallback to sample data if API fails
+                setProjects([
+                    {
+                        title: "Portfolio Website Deployment with AWS, Terraform, and GitHub Actions",
+                        description: "Designed and deployed a production-grade personal portfolio using Next.js hosted on AWS S3 with CloudFront CDN for global distribution.",
+                        technologies: ["AWS (S3, CloudFront, EC2)", "Terraform", "GitHub Actions", "CloudWatch", "Bash"]
+                    },
+                    {
+                        title: "Flask Microservice with Docker, Kubernetes, Helm, and GitOps",
+                        description: "Developed a lightweight Flask API and containerized it using Docker. Deployed the application to a Kubernetes cluster with Helm charts for modular configuration.",
+                        technologies: ["Flask", "Docker", "Kubernetes (Minikube)", "Helm", "ArgoCD", "Prometheus", "Grafana"]
+                    },
+                    {
+                        title: "Infrastructure Automation with Pulumi, Ansible, and GitLab CI/CD",
+                        description: "Provisioned an EC2-based LAMP stack (Linux, Apache, MySQL, PHP) on AWS using Pulumi (Python-based IaC).",
+                        technologies: ["Pulumi (Python)", "Ansible", "GitLab CI/CD", "Apache", "MySQL", "Bash"]
+                    }
+                ]);
+            }
         }
-    ];
+        
+        fetchProjects();
+    }, []);
 
     return (
         <main className="min-h-screen bg-background text-foreground flex flex-col">

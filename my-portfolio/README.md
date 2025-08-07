@@ -2,7 +2,24 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+### Database Setup
+
+This portfolio uses MongoDB to store project data. Follow these steps to set up your database:
+
+1. Create a MongoDB database (you can use [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) for a free cloud database)
+2. Copy your MongoDB connection string
+3. Create a `.env.local` file in the root directory with the following content:
+   ```
+   MONGODB_URI=your_mongodb_connection_string
+   ```
+4. Seed the database with initial project data:
+   ```bash
+   npm run seed
+   ```
+
+### Running the Development Server
+
+After setting up the database, run the development server:
 
 ```bash
 npm run dev

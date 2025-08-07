@@ -4,8 +4,77 @@
 import { motion } from "framer-motion";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import { useState } from "react";
 
 export default function ContactPage() {
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        subject: "",
+        message: ""
+    });
+    
+    const [status, setStatus] = useState({
+        message: "",
+        isError: false,
+        isSubmitting: false
+    });
+
+    const handleChange = (e) => {
+        const { id, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [id]: value
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        // Reset status
+        setStatus({
+            message: "",
+            isError: false,
+            isSubmitting: true
+        });
+        
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || 'Something went wrong');
+            }
+            
+            // Clear form on success
+            setFormData({
+                name: "",
+                email: "",
+                subject: "",
+                message: ""
+            });
+            
+            setStatus({
+                message: data.message,
+                isError: false,
+                isSubmitting: false
+            });
+        } catch (error) {
+            setStatus({
+                message: error.message,
+                isError: true,
+                isSubmitting: false
+            });
+        }
+    };
+
     return (
         <main className="min-h-screen bg-background text-foreground flex flex-col">
             <Navbar />
@@ -31,15 +100,23 @@ export default function ContactPage() {
             <section className="py-16">
                 <div className="max-w-4xl mx-auto px-4">
                     <div className="bg-card p-8 rounded-xl shadow-md border border-border">
-                        <form className="space-y-6">
+                        {status.message && (
+                            <div className={`mb-6 p-4 rounded-lg ${status.isError ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-green-100 text-green-700 border border-green-200'}`}>
+                                {status.message}
+                            </div>
+                        )}
+                        <form className="space-y-6" onSubmit={handleSubmit}>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label htmlFor="name" className="block mb-2 font-medium">Name</label>
                                     <input
                                         type="text"
                                         id="name"
+                                        value={formData.name}
+                                        onChange={handleChange}
                                         className="w-full px-4 py-3 rounded-lg bg-secondary/30 border border-border focus:outline-none focus:ring-2 focus:ring-primary/50"
                                         placeholder="Your name"
+                                        required
                                     />
                                 </div>
                                 <div>
@@ -47,8 +124,11 @@ export default function ContactPage() {
                                     <input
                                         type="email"
                                         id="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
                                         className="w-full px-4 py-3 rounded-lg bg-secondary/30 border border-border focus:outline-none focus:ring-2 focus:ring-primary/50"
                                         placeholder="Your email"
+                                        required
                                     />
                                 </div>
                             </div>
@@ -57,8 +137,11 @@ export default function ContactPage() {
                                 <input
                                     type="text"
                                     id="subject"
+                                    value={formData.subject}
+                                    onChange={handleChange}
                                     className="w-full px-4 py-3 rounded-lg bg-secondary/30 border border-border focus:outline-none focus:ring-2 focus:ring-primary/50"
                                     placeholder="Subject"
+                                    required
                                 />
                             </div>
                             <div>
@@ -66,15 +149,19 @@ export default function ContactPage() {
                                 <textarea
                                     id="message"
                                     rows="6"
+                                    value={formData.message}
+                                    onChange={handleChange}
                                     className="w-full px-4 py-3 rounded-lg bg-secondary/30 border border-border focus:outline-none focus:ring-2 focus:ring-primary/50"
                                     placeholder="Your message"
+                                    required
                                 ></textarea>
                             </div>
                             <button
                                 type="submit"
-                                className="bg-primary hover:bg-primary/90 transition-all px-8 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg text-primary-foreground w-full md:w-auto"
+                                disabled={status.isSubmitting}
+                                className="bg-primary hover:bg-primary/90 transition-all px-8 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg text-primary-foreground w-full md:w-auto disabled:opacity-70 disabled:cursor-not-allowed"
                             >
-                                Send Message
+                                {status.isSubmitting ? 'Sending...' : 'Send Message'}
                             </button>
                         </form>
                     </div>
