@@ -28,13 +28,6 @@ const customJestConfig = {
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
-  moduleNameMapping: {
-    // Handle module aliases (if you have them in your Next.js config)
-    '^@/(.*)$': '<rootDir>/$1',
-    '^@/components/(.*)$': '<rootDir>/components/$1',
-    '^@/app/(.*)$': '<rootDir>/app/$1',
-    '^@/lib/(.*)$': '<rootDir>/lib/$1',
-  },
   testMatch: [
     '**/__tests__/**/*.(js|jsx|ts|tsx)',
     '**/*.(test|spec).(js|jsx|ts|tsx)'

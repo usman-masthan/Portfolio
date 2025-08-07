@@ -36,10 +36,6 @@ jest.mock('next/link', () => ({
   },
 }))
 
-// Polyfill for Next.js server components
-global.Request = global.Request || require('next/dist/server/web/spec-extension/request').NextRequest
-global.Response = global.Response || require('next/dist/server/web/spec-extension/response').NextResponse
-
 // Mock environment variables
 process.env.EMAIL_HOST = 'smtp.test.com'
 process.env.EMAIL_PORT = '587'

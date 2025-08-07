@@ -84,7 +84,8 @@ describe('ThemeToggle Component', () => {
     
     render(<ThemeToggle />)
     
-    const button = screen.getByLabelText('Switch to dark mode')
+    // When localStorage has 'dark', the component should show "Switch to light mode"
+    const button = screen.getByLabelText('Switch to light mode')
     
     // Click to switch to light mode  
     fireEvent.click(button)
@@ -114,7 +115,7 @@ describe('ThemeToggle Component', () => {
     
     const button = screen.getByRole('button')
     
-    // Should have proper aria-label
+    // Should have proper aria-label (starts in light mode when no stored preference)
     expect(button).toHaveAttribute('aria-label', 'Switch to dark mode')
     
     // Should have focus styles (check for focus classes in className)
@@ -160,7 +161,7 @@ describe('ThemeToggle Component', () => {
     
     const button = screen.getByRole('button')
     
-    // Initially light mode
+    // Initially light mode (no stored preference)
     expect(button).toHaveAttribute('aria-label', 'Switch to dark mode')
     
     // Click to switch to dark mode
