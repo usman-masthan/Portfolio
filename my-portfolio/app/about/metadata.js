@@ -1,0 +1,27 @@
+export const metadata = {
+  title: 'About Me | Ahamed Usman - Full Stack Developer',
+  description: 'Learn about Ahamed Usman, a passionate Full Stack Developer with expertise in React, Node.js, and modern web technologies.',
+  keywords: ['about', 'full stack developer', 'web development', 'react', 'next.js', 'portfolio'],
+  openGraph: {
+    title: 'About Me | Ahamed Usman - Full Stack Developer',
+    description: 'Learn about Ahamed Usman, a passionate Full Stack Developer with expertise in React, Node.js, and modern web technologies.',
+    url: `${process.env.NEXT_PUBLIC_SITE_URL}/about`,
+    siteName: 'Ahamed Usman Portfolio',
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_SITE_URL}/og-image.jpg`,
+        width: 1200,
+        height: 630,
+        alt: 'Ahamed Usman - Full Stack Developer',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About Me | Ahamed Usman - Full Stack Developer',
+    description: 'Learn about Ahamed Usman, a passionate Full Stack Developer with expertise in React, Node.js, and modern web technologies.',
+    images: [`${process.env.NEXT_PUBLIC_SITE_URL}/og-image.jpg`],
+  },
+};

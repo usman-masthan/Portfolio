@@ -1,43 +1,60 @@
 // app/testimonials/page.jsx
 "use client"
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 export default function TestimonialsPage() {
-    const testimonials = [
-        {
-            name: "Sarah Johnson",
-            role: "Product Manager",
-            text: "Working with Ahamed was a pleasure. He delivered the project on time and exceeded our expectations with the quality of his work. His attention to detail and problem-solving skills made a significant difference in our product."
-        },
-        {
-            name: "Michael Chen",
-            role: "Startup Founder",
-            text: "Ahamed helped us build our MVP from scratch. His technical expertise and attention to detail made a huge difference in our product launch. He was responsive, proactive, and truly committed to our success."
-        },
-        {
-            name: "Jessica Williams",
-            role: "Marketing Director",
-            text: "We hired Ahamed to rebuild our company website and were thoroughly impressed with his work. He understood our brand and created a site that perfectly captured our vision while improving functionality."
-        },
-        {
-            name: "David Rodriguez",
-            role: "E-commerce Manager",
-            text: "Ahamed developed a custom e-commerce solution that transformed our online business. His work was clean, well-documented, and delivered ahead of schedule. I highly recommend his services."
-        },
-        {
-            name: "Emma Thompson",
-            role: "Design Agency Owner",
-            text: "As a design agency, we partnered with Ahamed for the development work on several client projects. His code quality and communication skills are exceptional, making collaboration seamless."
-        },
-        {
-            name: "Robert Kim",
-            role: "Tech Entrepreneur",
-            text: "Ahamed's expertise in React and Node.js helped us launch our SaaS platform. He's not just a developer but a true problem solver who brings valuable insights to every project."
+    const [testimonials, setTestimonials] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+    
+    useEffect(() => {
+        async function fetchTestimonials() {
+            try {
+                setIsLoading(true);
+                const response = await fetch('/api/testimonials');
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch testimonials');
+                }
+                
+                const data = await response.json();
+                setTestimonials(data);
+            } catch (error) {
+                console.error('Error fetching testimonials:', error);
+                setError(error.message);
+                // Fallback data in case of error
+                setTestimonials([
+                    {
+                        name: "Sarah Johnson",
+                        role: "Product Manager",
+                        company: "TechInnovate",
+                        text: "Working with Ahamed was a pleasure. He delivered the project on time and exceeded our expectations with the quality of his work. His attention to detail and problem-solving skills made a significant difference in our product."
+                    },
+                    {
+                        name: "Michael Chen",
+                        role: "Startup Founder",
+                        company: "NexGen Solutions",
+                        text: "Ahamed helped us build our MVP from scratch. His technical expertise and attention to detail made a huge difference in our product launch. He was responsive, proactive, and truly committed to our success."
+                    },
+                    {
+                        name: "Jessica Williams",
+                        role: "Marketing Director",
+                        company: "Brand Elevate",
+                        text: "We hired Ahamed to rebuild our company website and were thoroughly impressed with his work. He understood our brand and created a site that perfectly captured our vision while improving functionality."
+                    }
+                ]);
+            } finally {
+                setIsLoading(false);
+            }
         }
-    ];
+        
+        fetchTestimonials();
+    }, []);
 
     return (
         <main className="min-h-screen bg-background text-foreground flex flex-col">
@@ -60,34 +77,86 @@ export default function TestimonialsPage() {
                 </div>
             </section>
 
-            {/* Testimonials Grid */}
-            <section className="py-16">
-                <div className="max-w-6xl mx-auto px-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {testimonials.map((testimonial, i) => (
-                            <motion.div
-                                key={i}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: i * 0.1 }}
-                                viewport={{ once: true }}
-                                className="bg-card p-6 rounded-xl shadow-sm border border-border"
-                            >
-                                <div className="flex items-center mb-4">
-                                    <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
-                                        {testimonial.name.charAt(0)}
+            {/* Loading State */}
+            {isLoading && (
+                <section className="py-16">
+                    <div className="max-w-6xl mx-auto px-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {[1, 2, 3, 4, 5, 6].map((i) => (
+                                <div key={i} className="bg-card p-6 rounded-xl shadow-sm border border-border animate-pulse">
+                                    <div className="flex items-center mb-4">
+                                        <div className="w-12 h-12 rounded-full bg-secondary/30"></div>
+                                        <div className="ml-4">
+                                            <div className="h-5 bg-secondary/30 rounded w-24 mb-2"></div>
+                                            <div className="h-4 bg-secondary/30 rounded w-32"></div>
+                                        </div>
                                     </div>
-                                    <div className="ml-4">
-                                        <h3 className="font-bold">{testimonial.name}</h3>
-                                        <p className="text-sm text-foreground/70">{testimonial.role}</p>
-                                    </div>
+                                    <div className="h-4 bg-secondary/30 rounded w-full mb-2"></div>
+                                    <div className="h-4 bg-secondary/30 rounded w-full mb-2"></div>
+                                    <div className="h-4 bg-secondary/30 rounded w-3/4"></div>
                                 </div>
-                                <p className="italic text-foreground/80">"{testimonial.text}"</p>
-                            </motion.div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            )}
+            
+            {/* Error State */}
+            {error && !isLoading && (
+                <section className="py-16">
+                    <div className="max-w-6xl mx-auto px-4 text-center">
+                        <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-xl border border-red-200 dark:border-red-800">
+                            <h2 className="text-xl font-bold text-red-700 dark:text-red-400 mb-2">Error Loading Testimonials</h2>
+                            <p className="text-red-600 dark:text-red-300">{error}</p>
+                            <p className="mt-4 text-foreground/70">Showing fallback content instead.</p>
+                        </div>
+                    </div>
+                </section>
+            )}
+            
+            {/* Testimonials Grid */}
+            {!isLoading && (
+                <section className="py-16">
+                    <div className="max-w-6xl mx-auto px-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {testimonials.map((testimonial, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.5, delay: i * 0.1 }}
+                                    viewport={{ once: true }}
+                                    className="bg-card p-6 rounded-xl shadow-sm border border-border"
+                                >
+                                    <div className="flex items-center mb-4">
+                                        {testimonial.imageUrl ? (
+                                            <Image 
+                                                src={testimonial.imageUrl}
+                                                alt={testimonial.name}
+                                                width={48}
+                                                height={48}
+                                                className="rounded-full"
+                                            />
+                                        ) : (
+                                            <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                                                {testimonial.name.charAt(0)}
+                                            </div>
+                                        )}
+                                        <div className="ml-4">
+                                            <h3 className="font-bold">{testimonial.name}</h3>
+                                            <p className="text-sm text-foreground/70">
+                                                {testimonial.role}
+                                                {testimonial.company && ` at ${testimonial.company}`}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <p className="italic text-foreground/80">"{testimonial.text}"</p>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
 
             <Footer />
         </main>

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "node --experimental-json-modules scripts/seed-all.js"
+    "seed": "node --experimental-json-modules scripts/seed-data.js"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.13",
@@ -23,6 +23,7 @@
     "mongodb": "^6.18.0",
     "mongoose": "^8.17.0",
     "next": "15.3.2",
+    "nodemailer": "^7.0.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^3.3.0"
